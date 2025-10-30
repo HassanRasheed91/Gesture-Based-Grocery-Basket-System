@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FreshCart - Online Grocery Shopping</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap" rel="stylesheet">
+    <style>
+        body { background: #f8fafc; font-family: 'Montserrat', Arial, sans-serif; }
+        .navbar { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .navbar-brand { font-weight: 700; font-size: 2rem; color: #27ae60 !important; letter-spacing: 1px; }
+        .navbar-logo { width: 48px; height: 48px; border-radius: 50%; background: #fff; margin-right: 10px; }
+        .nav-link, .navbar-text { color: #2d3436 !important; font-weight: 500; }
+        .hero-section { background: linear-gradient(90deg, #e0ffe7 0%, #e3f0ff 100%); border-radius: 1.5rem; padding: 2.5rem 2rem 2rem 2rem; margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .hero-content { max-width: 500px; }
+        .hero-title { font-size: 2.5rem; font-weight: 700; color: #27ae60; }
+        .hero-subtitle { font-size: 1.2rem; color: #636e72; margin-bottom: 1.5rem; }
+        .hero-btn { font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: 2rem; font-weight: 600; }
+        .hero-img { max-width: 320px; border-radius: 1.5rem; box-shadow: 0 4px 24px rgba(39,174,96,0.08); }
+        .main-content { display: flex; gap: 2rem; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+        .left-col { max-width: 660px; width: 100%; }
+        .webcam-card, .products-card, .basket-card { border-radius: 1.2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+        .webcam-card .card-header, .products-card .card-header, .basket-card .card-header { border-radius: 1.2rem 1.2rem 0 0; font-weight: 600; font-size: 1.1rem; }
+        .webcam-video-area { background: #181c20; border-radius: 0 0 1.2rem 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0; }
+        .webcam-video-area img { width: 100%; max-width: 640px; height: auto; border-radius: 0.7rem; box-shadow: 0 2px 12px rgba(0,0,0,0.18); background: #222; }
+        .webcam-instruction { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; padding: 2px 14px; border-radius: 1rem; font-size: 0.95rem; letter-spacing: 0.5px; }
+        .product-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 1rem; border: none; }
+        .product-card:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 8px 24px rgba(52,152,219,0.12); }
+        .product-card .card-img-top { background: #f4f6fb; border-radius: 1rem 1rem 0 0; height: 140px; object-fit: contain; }
+        .basket-title { font-size: 1.3rem; font-weight: 600; letter-spacing: 1px; }
+        .basket-list li { font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between; }
+        #basket-list .added { animation: basketAdded 0.5s; }
+        @keyframes basketAdded { 0% { background: #d4f8e8; } 100% { background: none; } }
+        .pending-product-message { font-size: 1.1rem; font-weight: 500; color: #e67e22; margin-bottom: 1rem; text-align: center; }
+        .footer { text-align: center; color: #888; margin-top: 3rem; font-size: 1rem; padding: 2rem 0 0.5rem 0; border-top: 1px solid #e1e1e1; }
+        @media (max-width: 991px) {
+            .main-content { flex-direction: column; align-items: stretch; }
+            .left-col, .basket-card { max-width: 100%; }
+            .hero-section { flex-direction: column; text-align: center; }
+            .hero-img { margin-top: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="/static/logo.png" alt="FreshCart Logo" class="navbar-logo">
+                FreshCart
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                {% if user %}
+                    <span class="navbar-text me-3">Hi, {{ user.name }}</span>
+                    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+                {% else %}
+                    <span class="navbar-text me-3">Welcome, Guest</span>
+                    <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="/signup" class="btn btn-success">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <div class="container mb-5">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-title mb-2">Welcome to FreshCart</div>
+                <div class="hero-subtitle mb-3">Your one-stop online grocery store. Shop fresh groceries with just a wave of your hand! Use gestures to add products to your basket instantly.</div>
+                <a href="#products" class="btn btn-success hero-btn" onclick="document.getElementById('products-section').scrollIntoView({behavior: 'smooth'}); return false;">Start Shopping</a>
+            </div>
+            <img src="/static/Grocery_shoping.jpeg" alt="Grocery Shopping" class="hero-img d-none d-md-block">
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0 d-flex flex-column align-items-stretch">
+                <div class="basket-card card h-100 mb-4">
+                    <div class="card-header bg-success text-white basket-title"><i class="bi bi-cart3 me-2"></i>Your Basket <img src="/static/sign/Remove.png" alt="Remove sign" style="width:28px;height:28px;vertical-align:middle;margin-left:8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);"></div>
+                    <div class="card-body d-flex flex-column">
+                        <div id="pending-product-message" class="pending-product-message" style="display:none;"></div>
+                        <ul id="basket-list" class="list-group mb-3 basket-list flex-grow-1"></ul>
+                        <button id="clear-basket-btn" class="btn btn-outline-danger btn-sm mt-auto">Clear Basket</button>
+                        <div class="d-flex gap-2 mt-3">
+                            <button id="reset-btn" class="btn btn-outline-secondary">Reset Session</button>
+                            <button id="pause-btn" class="btn btn-outline-primary">Pause</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card webcam-card">
+                    <div class="card-header bg-dark text-white d-flex align-items-center">
+                        <i class="bi bi-camera-video me-2"></i> Gesture Camera
+                    </div>
+                    <div class="webcam-video-area position-relative">
+                        <img id="video" src="/video_feed" alt="Webcam Feed">
+                        <div class="webcam-instruction">Show your hand here to add products</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card products-card border-0" id="products-section" style="max-width: 100%; margin: 0 auto;">
+                    <div class="card-header bg-primary text-white fw-bold fs-5">Shop Products</div>
+                    <div class="card-body">
+                        <div class="row g-4" id="products">
+                            {% for product in product_data %}
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="card h-100 shadow-sm product-card position-relative">
+                                    <div class="d-flex flex-column align-items-center mt-2">
+                                        {% if product.name == 'Orange' %}
+                                            <img src="/static/sign/orange.png" alt="Orange sign" style="width:38px;height:38px;object-fit:contain;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:4px;">
+                                        {% else %}
+                                            <img src="/static/sign/{{ product.name }}.png" alt="{{ product.name }} sign" style="width:38px;height:38px;object-fit:contain;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:4px;">
+                                        {% endif %}
+                                        <img src="/static/{{ product.image }}" class="card-img-top p-2" alt="{{ product.name }}" style="height:140px;">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title mb-1">{{ product.name }}</h5>
+                                        <p class="card-text text-success fw-bold mb-2">£{{ '%.2f'|format(product.price) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Extra Features Section -->
+    <div class="container my-5">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                    <i class="bi bi-truck fs-1 text-success mb-2"></i>
+                    <h6 class="fw-bold">Fast Delivery</h6>
+                    <div class="small text-muted">Get groceries delivered to your door in under 1 hour.</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                    <i class="bi bi-credit-card-2-front fs-1 text-primary mb-2"></i>
+                    <h6 class="fw-bold">Secure Payment</h6>
+                    <div class="small text-muted">Pay online or on delivery with 100% secure checkout.</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                    <i class="bi bi-headset fs-1 text-info mb-2"></i>
+                    <h6 class="fw-bold">24/7 Support</h6>
+                    <div class="small text-muted">Our team is here to help you anytime, day or night.</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                    <i class="bi bi-patch-check fs-1 text-warning mb-2"></i>
+                    <h6 class="fw-bold">Quality Guarantee</h6>
+                    <div class="small text-muted">Only the freshest, best-quality groceries—guaranteed.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="footer bg-white border-top mt-5 pt-4 pb-2">
+        <div class="container text-center">
+            <div class="mb-2">
+                <a href="#" class="me-3 text-success text-decoration-none fw-bold">Home</a>
+                <a href="#products-section" class="me-3 text-primary text-decoration-none fw-bold">Shop</a>
+                <a href="#" class="text-secondary text-decoration-none">Contact</a>
+            </div>
+            <div class="small text-muted mb-2">&copy; {{ 2024 }} FreshCart. All rights reserved. | The Smartest Way to Shop Groceries Online.</div>
+            <div class="small">
+                <i class="bi bi-geo-alt me-1"></i> Serving your city | <i class="bi bi-envelope ms-2 me-1"></i> support@freshcart.com
+            </div>
+        </div>
+    </footer>
+    <script>
+        function updateBasket() {
+            fetch('/basket')
+                .then(response => response.json())
+                .then(data => {
+                    const basketList = document.getElementById('basket-list');
+                    const prevCount = basketList.childElementCount;
+                    basketList.innerHTML = '';
+                    if (data.basket.length === 0) {
+                        basketList.innerHTML = '<li class="list-group-item">Your basket is empty</li>';
+                    } else {
+                        data.basket.forEach(function(item, idx) {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item d-flex align-items-center';
+                            li.innerHTML = `
+                                <img src='/static/${item.image}' alt='${item.name}' style='width:36px;height:36px;object-fit:contain;border-radius:8px;margin-right:12px;'>
+                                <span class='flex-grow-1'>${item.name}</span>
+                                <span class='text-success fw-bold ms-2'>£${item.price.toFixed(2)}</span>
+                            `;
+                            if (idx >= prevCount) {
+                                li.classList.add('added');
+                                setTimeout(() => li.classList.remove('added'), 600);
+                            }
+                            basketList.appendChild(li);
+                        });
+                    }
+                });
+        }
+        setInterval(updateBasket, 1000);
+
+        function updatePendingProduct() {
+            fetch('/detection')
+                .then(response => response.json())
+                .then(data => {
+                    const pendingDiv = document.getElementById('pending-product-message');
+                    if (data.pending_product) {
+                        pendingDiv.innerHTML = `<span>Ready to add: <b>${data.pending_product}</b> (show 'Add' sign to confirm)</span> <img src='/static/sign/Add.png' alt='Add sign' style='width:32px;height:32px;vertical-align:middle;margin-left:8px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);'>`;
+                        pendingDiv.style.display = '';
+                    } else {
+                        pendingDiv.textContent = '';
+                        pendingDiv.style.display = 'none';
+                    }
+                });
+        }
+        setInterval(updatePendingProduct, 500);
+
+        document.getElementById('reset-btn').onclick = () => fetch('/reset', {method: 'POST'});
+        document.getElementById('pause-btn').onclick = () => fetch('/pause', {method: 'POST'});
+        document.getElementById('clear-basket-btn').onclick = () => fetch('/basket/clear', {method: 'POST'});
+    </script>
+</body>
+</html> 
