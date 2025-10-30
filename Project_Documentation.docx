@@ -1,0 +1,68 @@
+Project Title: Hand Gesture-Based Grocery Basket System
+
+1. Project Overview
+This project is a web-based application that allows users to interact with a virtual grocery basket using hand gestures. The system uses computer vision and machine learning to recognize hand signs for different grocery products and basket operations (add/remove). The application is built with Python (Flask), OpenCV, Mediapipe, and scikit-learn.
+
+2. Dataset Creation
+• The dataset is custom-built using a webcam.
+• Each product (e.g., Apple, Banana, Milk) is assigned a unique class (0-9).
+• Images for each class are collected and stored in the data/ directory, with subfolders for each class.
+• The script collectImgs.py is used to capture images for each class using the webcam.
+• The script createDataset.py processes these images, extracts hand landmarks using Mediapipe, and saves the features and labels in data.pickle.
+
+3. Model Training
+• The script trainClassifier.py loads the processed dataset from data.pickle.
+• A RandomForestClassifier is trained to recognize hand gestures for each product class.
+• The model is evaluated for accuracy and saved as model/model.p.
+• The script also generates a learning curve graph showing training and validation accuracy as the training set size increases.
+
+4. Application Structure
+• app.py: Main Flask application. Handles user authentication, video streaming, gesture recognition, basket management, and TTS feedback.
+• collectImgs.py: Script to collect gesture images for each class using a webcam.
+• createDataset.py: Processes collected images, extracts features, and creates the dataset.
+• trainClassifier.py: Trains the RandomForest model and plots the learning curve.
+• model/: Contains the trained model (model.p).
+• data/: Contains subfolders for each class with collected images.
+• data.pickle: Pickled dataset of features and labels.
+• requirements.txt: List of all required Python libraries.
+• users.json: Stores user credentials for authentication.
+• templates/: HTML templates for the web interface.
+• static/: Static assets (product images, etc.).
+
+5. How the System Works
+1. User logs in or signs up via the web interface.
+2. Webcam feed is shown on the main page.
+3. User performs hand gestures for products or actions (add/remove).
+4. System recognizes gestures using Mediapipe and the trained model.
+5. Recognized products can be added/removed from the basket.
+6. Basket and product info are displayed on the web interface.
+7. TTS can read out recognized words/sentences.
+
+6. Class Structure
+• Each product is a separate class (0-7 for products, 8 for Add, 9 for Remove).
+• The model predicts the class based on hand gesture features.
+
+7. File Descriptions
+• app.py: Main backend logic, routes, and gesture processing.
+• collectImgs.py: Data collection for each class.
+• createDataset.py: Feature extraction and dataset creation.
+• trainClassifier.py: Model training and evaluation.
+• model/: Trained model storage.
+• data/: Raw image data for each class.
+• requirements.txt: Python dependencies.
+• users.json: User data for authentication.
+• templates/: Frontend HTML files.
+• static/: Images and other static files.
+
+8. How to Run the Project
+1. Install dependencies: pip install -r requirements.txt
+2. Collect images: python collectImgs.py
+3. Create dataset: python createDataset.py
+4. Train model: python trainClassifier.py
+5. Run the app: python app.py
+
+9. Notes
+• The dataset is custom and can be expanded by collecting more images.
+• Each product and operation is mapped to a unique hand gesture/class.
+• The system is modular and can be extended for more products or actions.
+
